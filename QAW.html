@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Audio Workstation</title>
+</head>
+<body>
+  <h1>Quantum Audio Workstation</h1>
+
+  <div class="trackBar">
+
+  </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<input type="file" id="upload" />
+<audio id="audio" controls>
+  <source src="" id="src" />
+</audio>
+
+
+
+<!-- SCRIPT -->
+
+  <script>
+
+function handleFiles(event) {
+    var files = event.target.files;
+    $("#src").attr("src", URL.createObjectURL(files[0]));
+    document.getElementById("audio").load();
+}
+
+document.getElementById("upload").addEventListener("change", handleFiles, false);
+
+
+
+  </script>
+
+</body>
+</html>
