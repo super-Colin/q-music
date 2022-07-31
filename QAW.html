@@ -5,36 +5,146 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quantum Audio Workstation</title>
+
+  <link rel="stylesheet" href="QAW.css">
 </head>
 <body>
+
+
   <h1>Quantum Audio Workstation</h1>
 
-  <div class="trackBar">
 
+  <div class="inputDiv">
+    <h4>File Input</h4>
+    <input type="file" id="audioFileInput" multiple />
+    <!-- list uploaded audio files -->
+    <ul id="audioFileList"></ul>
   </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+  <div class="trackDiv">
+    <audio id="audio" controls>
+      <source src="" id="src" />
+    </audio>
+  </div>
+
+  <hr>
+  <div id="debugPanel">
+    <h4>Debug Panel</h4>
+  </div>
+
+
+<script>
+  var uploadedFiles = [];
+  populateDebugPanel();
+  document.querySelector("#audioFileInput").addEventListener("change", handleAudioFileUpload, false);
+
+
+  function handleAudioFileUpload(event) {
+      var file = event.target.files[0];
+      let list = document.querySelector("#audioFileList");
+      addFileToUploads(file);
+      updateFileList();
+
+      // .attr("src", URL.createObjectURL(files[0]));
+      // document.querySelector("#audio").load();
+  }
+
+  function addFileToUploads(file) {
+    indexOfFile = indexOfFileNameInFiles(file.name, uploadedFiles)
+    if( indexOfFile === -1 ) {
+      uploadedFiles.push(file);
+    }
+  }
+
+  function deleteFileFromUploads(fileName) {
+    indexOfFile = indexOfFileNameInFiles(fileName, uploadedFiles)
+    if( indexOfFile > -1 ) {
+      uploadedFiles.splice(uploadedFiles.indexOfFile, 1);
+    }
+  }
+
+
+  function updateFileList() {
+    console.log('updating file list');
+    var fileList = document.getElementById("audioFileList");
+    fileList.innerHTML = "";
+    for(var i = 0; i < uploadedFiles.length; i++){
+      var file = uploadedFiles[i];
+      var li = document.createElement("li");
+      li.classList.add("file");
+      li.innerHTML = file.name;
+      fileList.appendChild(li);
+      attachButtonsToFileListItem(li, file);
+    }
+  }
+
+  function attachButtonsToFileListItem(listItemElem, file) {
+    // delete button
+    var deleteButton = document.createElement("button");
+    deleteButton.innerHTML = "Delete";
+    deleteButton.classList.add("deleteButton");
+    listItemElem.appendChild(deleteButton);
+    deleteButton.addEventListener("click", function(){
+      deleteFileFromUploads(file.name);
+      updateFileList();
+    });
+
+  }
+
+  function indexOfFileNameInFiles(fileName, files) {
+    for(var i = 0; i < files.length; i++){
+      if(files[i].name == fileName){
+        return i;
+      }
+    }
+    return -1;
+  }
+
+
+
+  function populateDebugPanel(){
+    var debugPanel = document.getElementById("debugPanel");
+    // uploaded files
+    uploadedFilesLogButton = document.createElement("button");
+    uploadedFilesLogButton.innerHTML = "Log Uploaded Files";
+    uploadedFilesLogButton.addEventListener("click", function(){
+      console.log(uploadedFiles);
+      console.log('~~~~~~~~~~~~~~~~~');
+    });
+    debugPanel.appendChild(uploadedFilesLogButton);
+
+
+  }
+
+  </script>
+
+
+
+
+
+
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <input type="file" id="upload" />
 <audio id="audio" controls>
   <source src="" id="src" />
-</audio>
-
-
+</audio> -->
 
 <!-- SCRIPT -->
+<script>
 
-  <script>
+// function jq_handleFiles(event) {
+//     var files = event.target.files;
+//     $("#src").attr("src", URL.createObjectURL(files[0]));
+//     document.getElementById("audio").load();
+// }
+// document.getElementById("upload").addEventListener("change", jq_handleFiles, false);
 
-function handleFiles(event) {
-    var files = event.target.files;
-    $("#src").attr("src", URL.createObjectURL(files[0]));
-    document.getElementById("audio").load();
-}
-
-document.getElementById("upload").addEventListener("change", handleFiles, false);
-
-
-
-  </script>
+</script>
 
 </body>
 </html>
